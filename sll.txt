@@ -43,9 +43,7 @@ void insertEnd(int data){
     struct node* current = head;
 
     link->data = data;
-    link->key = rand();
-    link->next = NULL;
-
+    
     while(current->next!=NULL){
         current = current->next;
     }
