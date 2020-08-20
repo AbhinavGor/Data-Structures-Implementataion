@@ -4,64 +4,65 @@
 int cqueue[MAX];
 int front=-1, rear=-1;
 
+int isFull(){
+    if(front == (rear + 1) % MAX){
+        return 1;
+    }
+    return 0;
+}
+
+int isEmpty(){
+    if(front == -1 &&  rear == -1){
+        return 1;
+    }
+    return 0;
+}
+
 void enqueue(int data){
-    if(( front == 0 && rear == MAX - 1 ) || ( front == rear + 1)){
-        printf("Queue Overflow!!\n");
-        return;
-    }
-    if(front == -1){
-        front = 0; rear = 0;
-    }else{
-        if( rear = MAX - 1){
-            rear = 0;
-        }else{
-            rear += 1;
+    if(!isFull()){
+        if(isEmpty()){
+            front = 0;
         }
+        rear = (rear + 1)%MAX;
+        cqueue[rear] = data;
+        return;
+    }else{
+        printf("Queue Overflowed!");
     }
-    cqueue[rear] = data;
 }
 
 void dequeue(){
-    if( front == -1 ){
-        printf("Queue Undeflow!!\n");
+    if(!isEmpty()){
+        printf("The dequeued element is %d.", cqueue[front]);
+        if(front == rear){
+            front = -1;
+            rear = -1;
+            return;
+        }
+        front = (front+1)%MAX;
         return;
     }
-    printf("Element dequeued is %d.", cqueue[rear]);
-
-    if(front == rear){
-        front = -1; rear = -1;
-    }else{
-        if( front == MAX - 1){
-            front = 0;
-        }else{
-            front += 1;
-        }
-    }
+    printf("The Queue is empty (Underflow)!");
+    return;
 }
 
-void display(){
-    int FrontP=front;
-    int  RearP=rear;
-    if(front==-1){
-        printf("Queue Underflow!!\n");
+void dispQueue(){
+    if(isEmpty()){
+        printf("Queue is empty!!\n");
         return;
-    }
-    printf("Queue has the following elements: \n");
-    if(front <= rear){
-        while(FrontP <= RearP){
-            printf("%d\t", cqueue[FrontP]);
-            FrontP++;
-        }
-    }else{
-        while(FrontP<= MAX - 1){
-            printf("%d\t", cqueue[FrontP]);
-            FrontP++;
-        }
-        while(RearP<front){
-            printf("%d\t", cqueue[RearP]);
-            RearP++;
+    }else
+    {
+        printf("Start\t");
+        for(int i = front; 1; i=(i+1)%MAX){
+            printf("%d\t", cqueue[i]);
+            if(i == rear){
+                break;
+            }
         }
     }
+
+    printf("End\n");
+    return;
 }
 
 int main(){
@@ -85,7 +86,7 @@ int main(){
             dequeue();
             break;
         case 3:
-            display();
+            dispQueue();
             break;
                 
         default:
