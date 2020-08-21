@@ -65,7 +65,7 @@ void main(){
             break;
         
         case 2:
-            printf("Enter the integer to be deleted from the list: \n");
+            printf("Enter the position of integer to be deleted from the list: \n");
             scanf("%d", &data);
             delete(data);
             break;
