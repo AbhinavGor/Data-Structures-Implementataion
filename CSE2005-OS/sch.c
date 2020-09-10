@@ -147,7 +147,50 @@ void waitPrior(Process pr[], int n){
 
 //RoundRobin
 void roundRobin(Process pr[], int n, int time){
+    printf("Enter quantum time: ");
+    scanf("%d",&qt);
+    while(1)
+    {
 
+        for(i=0,count=0;i<n;i++)
+        {
+            temp=qt;
+            if(p[i].rem_bt==0)
+            {
+                count++;
+                continue;
+            }
+            if(p[i].rem_bt>qt)
+                p[i].rem_bt=p[i].rem_bt-qt;
+            else
+            {
+
+
+                if(p[i].rem_bt>=0)
+                {
+                    temp=p[i].rem_bt;
+                    p[i].rem_bt=0;
+
+                }
+            }
+
+                sq=sq+temp;
+                p[i].turnaround_time=sq;
+
+
+        }
+        if(n==count)
+            break;
+    }
+
+    for(i=0;i<n;i++)
+    {
+        p[i].waiting_time=p[i].turnaround_time-p[i].burst_time;
+        sum_waiting_time=sum_waiting_time+p[i].waiting_time;
+        sum_turnaround_time=sum_turnaround_time+p[i].turnaround_time;
+        p[i].completion_time=p[i].turnaround_time;
+
+    }
 }
 
 float avgTAT(Process pr[], int n){
