@@ -1,4 +1,3 @@
-// C program to demonstrate insert operation in binary search tree. 
 #include<stdio.h> 
 #include<stdlib.h> 
    
@@ -8,7 +7,6 @@ struct node
     struct node *left, *right; 
 }; 
    
-// A utility function to create a new BST node 
 struct node *newNode(int item) 
 { 
     struct node *temp =  (struct node *)malloc(sizeof(struct node)); 
@@ -17,7 +15,6 @@ struct node *newNode(int item)
     return temp; 
 } 
    
-// A utility function to do inorder traversal of BST 
 void inorder(struct node *root) 
 { 
     if (root != NULL) 
@@ -28,108 +25,85 @@ void inorder(struct node *root)
     } 
 } 
    
-/* A utility function to insert a new node with given key in BST */
 struct node* insert(struct node* node, int key){ 
-    /* If the tree is empty, return a new node */
     if (node == NULL) return newNode(key); 
   
-    /* Otherwise, recur down the tree */
     if (key < node->key) 
         node->left  = insert(node->left, key); 
     else if (key > node->key) 
         node->right = insert(node->right, key);    
   
-    /* return the (unchanged) node pointer */
     return node; 
 } 
 
-struct node* delete(struct node *root, int x)
-{
-    //searching for the item to be deleted
-    if(root==NULL)
-        return NULL;
-    if (x>root->data)
-        root->right_child = delete(root->right_child, x);
-    else if(x<root->data)
-        root->left_child = delete(root->left_child, x);
+struct node * minValueNode(struct node* node) 
+{ 
+    struct node* current = node; 
+  
+    while (current && current->left != NULL) 
+        current = current->left; 
+  
+    return current; 
+} 
+
+struct node* delete(struct node* root, int key) 
+{ 
+  
+    if (root == NULL) return root; 
+  
+    if (key < root->key) 
+        root->left = delete(root->left, key); 
+  
+    else if (key > root->key) 
+        root->right = delete(root->right, key); 
+  
     else
-    {
-        //No Children
-        if(root->left_child==NULL && root->right_child==NULL)
-        {
-            free(root);
-            return NULL;
-        }
-
-        //One Child
-        else if(root->left_child==NULL || root->right_child==NULL)
-        {
-            struct node *temp;
-            if(root->left_child==NULL)
-                temp = root->right_child;
-            else
-                temp = root->left_child;
-            free(root);
-            return temp;
-        }
-
-        //Two Children
-        else
-        {
-            struct node *temp = find_minimum(root->right_child);
-            root->data = temp->data;
-            root->right_child = delete(root->right_child, temp->data);
-        }
-    }
-    return root;
-}
+    { 
+        if (root->left == NULL) 
+        { 
+            struct node *temp = root->right; 
+            free(root); 
+            return temp; 
+        } 
+        else if (root->right == NULL) 
+        { 
+            struct node *temp = root->left; 
+            free(root); 
+            return temp; 
+        } 
+        struct node* temp = minValueNode(root->right); 
+        root->key = temp->key; 
+        root->right = delete(root->right, temp->key); 
+    } 
+    return root; 
+} 
 
 void printPostorder(struct node* node) 
 { 
      if (node == NULL) 
         return; 
-  
-     // first recur on left subtree 
      printPostorder(node->left); 
-  
-     // then recur on right subtree 
      printPostorder(node->right); 
-  
-     // now deal with the node 
-     printf("%d ", node->data); 
+     printf("%d ", node->key); 
 } 
   
-/* Given a binary tree, print its nodes in preorder*/
 void printPreorder(struct node* node) 
 { 
      if (node == NULL) 
           return; 
-  
-     /* first print data of node */
-     printf("%d ", node->data);   
-  
-     /* then recur on left sutree */
+     printf("%d ", node->key);   
      printPreorder(node->left);   
-  
-     /* now recur on right subtree */
      printPreorder(node->right); 
 } 
 
-// Driver Program to test above functions 
 int main() 
 { 
-    /* Let us create following BST 
-              50 
-           /     \ 
-          30      70 
-         /  \    /  \ 
-       20   40  60   80 */
     struct node *root = NULL; 
     int data, opt;
     while(1){
 
-        printf("----------Implementation of Queue using SLL----------");
-        printf("\n1.)Insert\n2.)Inorder\n3.)Postorder\n4.)Exit");
+        printf("----------Implementation of Binary Serach Tree----------");
+        printf("\n1.)Insert\n2.)Inorder\n3.)Postorder\n4.)PreOrder\n5.)Delete\n6.)Exit\n");
         
         printf("\nEnter your choice:\n");
         scanf("%d", &opt);
@@ -145,19 +119,25 @@ int main()
             insert(root, data);
             break;
         case 2:
+            printf("Inorder\n");
             inorder(root);
             break;
         case 3:
+            printf("Postorder\n");
             printPostorder(root);
+            printf("\n");
             break;
         case 4:
+            printf("PreOrder\n");
             printPreorder(root);
+            printf("\n");
             break;
-         case 5:
-            delete(data);
          case 5:
             printf("Enter data to be deleted:\n");
             scanf("%d", &data);
+            delete(root, data);
+            break;
+         case 6:
             exit(0);
         
         default:
@@ -166,8 +146,5 @@ int main()
         }
     }
    
-   //  // print inoder traversal of the BST 
-   //  inorder(root); 
-   
-    return 0; 
+   return 0; 
 } 
