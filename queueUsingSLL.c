@@ -12,10 +12,6 @@ void create(){
     front = rear = NULL;
 }
 
-void queueSize(){
-    printf("The number of elements in the queue are: %d.", count);
-}
-
 void enqueue(int data){
     if(rear == NULL){
         rear = (struct node *)malloc(1*sizeof(struct node));
@@ -41,7 +37,7 @@ void dequeue(){
         return;
     }else{
         if(front1->ptr != NULL){
-            printf("\nDequeued value: %d", front->info);
+            printf("\nDequeued value: %d.\n", front->info);
             free(front);
             front = front1;
         }else

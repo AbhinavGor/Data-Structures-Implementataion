@@ -12,9 +12,9 @@ void create(){
     top = NULL;
 }
 
-void stackCount(){
-    printf("The number of elements in the stack are: %d.", count);
-}
+// void stackCount(){
+//     printf("The number of elements in the stack are: %d.", count);
+// }
 
 void push(int data){
     if(top == NULL){
@@ -56,10 +56,6 @@ void pop(){
     printf("The popped value is %d.", top->info);
     top = top1;
     count--;
-}
-
-int topElement(){
-    return(top->info);
 }
 
 void isEmpty(){
