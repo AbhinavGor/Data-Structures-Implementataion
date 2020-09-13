@@ -1,247 +1,391 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<limits.h>
 #define MAX 100
-
-typedef struct{
+typedef struct
+{
 int pid;
-int arrival_time; int burst_time; int waiting_time;
-int turnaround_time; int completion_time; int priority;
+int arrival_time;
+int burst_time;
+int waiting_time;
+int turnaround_time;
+int completion_time;
+int priority;
+int rem_bt;
 }Process;
-
-void print_table(Process p[], int n){
-    int i;
-
-    puts("\n| PID | Arrival Time | Burst Time | Waiting Time | Turnaround Time | Completion Time |\n");
-
-    for(i = 0; i < n; i++){
-        printf("| %d | %d | %d | %d | %d | %d |\n", p[i].pid, p[i].arrival_time, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time, p[i].completion_time);
-        // printf("| %d | %d | %d |\n", p[i].pid, p[i].burst_time, p[i].arrival_time);
-    }
+void print_table(Process p[], int n);
+void FCFS()
+{
+// get values and calculate the average waiting time and turnaround time
+Process p[MAX];
+int n,i,j,sum_waiting_time=0,sum_turnaround_time=0;
+int temp[MAX];
+printf("Enter number of processes: ");
+scanf("%d",&n);
+printf("Enter the values:\n");
+for(i=0;i<n;i++)
+{
+printf("Enter pid: ");
+scanf("%d",&p[i].pid);
+printf("\n");
+printf("Enter Arrival time: ");
+scanf("%d",&p[i].arrival_time);
+printf("\n");
+printf("Enter Burst time: ");
+scanf("%d",&p[i].burst_time);
+printf("\n");
 }
-
-
-void getProcesses(Process pr[], int num){
-
-    for(int i=0; i<num; i++){
-        printf("\nEnter process ID:\n");
-        scanf("%d", &pr[i].pid);
-        
-        printf("\nEnter the Burst Time:\n");
-        scanf("%d", &pr[i].burst_time);
-
-        printf("\nEnter the Arrival Time:\n");
-        scanf("%d", &pr[i].arrival_time);    
-
-        printf("\nEnter the Priority:\n");
-        scanf("%d", &pr[i].priority);    
-    }
+temp[0]=0;
+for(j=0;j<n;j++)
+{
+p[j].waiting_time=0;
+p[j].turnaround_time=0;
+temp[j+1]=temp[j] + p[j].burst_time;
+p[j].waiting_time=temp[j] - p[j].arrival_time;
+p[j].turnaround_time= p[j].turnaround_time + p[j].waiting_time+p[j].burst_time;
+sum_waiting_time=sum_waiting_time + p[j].waiting_time;
+sum_turnaround_time=sum_turnaround_time + p[j].turnaround_time;
+p[j].completion_time=p[j].turnaround_time + p[j].arrival_time;
 }
-
-
-//FCFS
-void waitFCFS(Process pr[], int n){
-    pr[0].waiting_time = 0;
-    for(int i = 1; i < n; i++){
-        pr[i].waiting_time = pr[i-1].burst_time + pr[i - 1].waiting_time;
-    }
+// print table
+puts(""); // Empty line
+print_table(p, n);
+puts(""); // Empty Line
+printf("Total Waiting Time : %d\n", sum_waiting_time);
+printf("Average Waiting Time : %f\n", (double)sum_waiting_time / (double) n);
+printf("Total Turnaround Time : %d\n", sum_turnaround_time);
+printf("Average Turnaround Time : %f\n", (double)sum_turnaround_time / (double) n);
 }
-
-void tatFCFS(Process pr[], int n){
-    for(int i =0; i< n; i++){
-        pr[i].turnaround_time = pr[i].burst_time + pr[i].waiting_time;
-    }
+void print_table(Process p[], int n)
+{
+int i;
+puts("| PID | Burst Time | Waiting Time | Turnaround Time | Completion Time|");
+for(i=0; i<n; i++)
+{
+printf("| %2d | %2d | %2d | %2d | %2d |\n", p[i].pid, p[i].burst_time, p[i].waiting_time, p[i].turnaround_time,p[i].completion_time );
 }
-
-void compTimeFCFS(Process pr[], int n){
-    for(int i =0; i < n; i++){
-        pr[i].completion_time = pr[i].burst_time + pr[i].waiting_time + pr[i].arrival_time;
-    }
 }
-
-void FCFS(Process pr[], int num, int time){
-    waitFCFS(pr, num);
-    tatFCFS(pr, num);
-    print_table(pr, num);
+void SJF()
+{
+Process p[MAX];
+int n,i,j,t,sum_waiting_time=0,sum_turnaround_time=0;
+int temp[MAX];
+printf("Enter number of processes: ");
+scanf("%d",&n);
+printf("Enter the values:\n");
+for(i=0;i<n;i++)
+{
+printf("Enter pid: ");
+scanf("%d",&p[i].pid);
+printf("\n");
+printf("Enter Burst time: ");
+scanf("%d",&p[i].burst_time);
+printf("\n");
 }
-
-//SJF
-void sortSJF(Process pr[], int n){
-    Process temp;
-    for(int i =0 ; i < n - 1; i++){
-        for(int j = 0; j < n - 1 - i; i++){
-            if(pr[j].burst_time > pr[j + 1].burst_time){
-                temp = pr[j + 1];
-                pr[j + 1] = pr[j];
-                pr[j] = temp;
-            }
-        }
-    }
+for(i=0;i<n;i++)
+{
+for(j=0;j<n-i-1;j++) //bubble sort for burst time
+{
+if(p[j].burst_time>p[j+1].burst_time)
+{
+t=p[j].burst_time;
+p[j].burst_time=p[j+1].burst_time;
+p[j+1].burst_time=t;
+t=p[j].pid;
+p[j].pid=p[j+1].pid;
+p[j+1].pid=t;
 }
-
-void waitSJF(Process pr[], int num){
-    for(int j = 0; j < num; j++){
-        pr[i].waiting_time = 0;
-        for(int i = 0; i < j; i++){
-            pr[i].waiting_time = pr[j].burst_time + pr[j].waiting_time;
-        }
-    }
 }
-
-void tatSJF(Process pr[], int n){
-    for(int i = 0; i < n; i++){
-        pr[i].turnaround_time = pr[i].burst_time + pr[i].waiting_time;
-    }
 }
-
-void SJF(Process pr[], int num){
-    sortSJF(pr, num);
-    waitSJF(pr, num);
-    tatSJF(pr, num);
-    print_table(pr, n);
+for(i=0;i<n;i++)
+{
+p[i].waiting_time=0;
+p[i].turnaround_time=0;
+for(j=0;j<i;j++)
+{
+p[i].waiting_time=p[i].waiting_time+p[j].burst_time;
 }
-
-// //SRTF
-// void SRTF(Process pr[], int n, int time){
-//     sortSJF(pr, n);
-//     waitSRTF(pr, n);
-//     tatSRTF(pr, n);
-// }
-
-// void waitSRTF(Process pr[], int n){
-
-// }
-
-// void tatSRTF(Process pr[], int n){
-
-// }
-
-//
-
-//Priority
-void Priority(Process, pr[], int n, int time){
-    sortPrior(pr, n);
-    waitSJF(pr, n);
-    tatSJF(pr, n);
-    print_table(pr, n);
+p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
+sum_waiting_time=sum_waiting_time + p[i].waiting_time;
+sum_turnaround_time=sum_turnaround_time +
+p[i].turnaround_time;
+p[i].completion_time=p[i].turnaround_time + p[i].arrival_time;
 }
-
-void sortPrior(Process pr[], int n){
-    for(int i = 0; i < n; i++){
-        int key = pr[i].priority;
-        int j = i - 1;
-
-        while (j >= 0 && pr[j].priority > key)
-        {
-            pr[j + 1].priority = pr[j].priority;
-            j -= 1;
-        }
-
-        pr[j + 1].priority = key;
-        
-    }
+puts(""); // Empty line
+print_table(p, n);
+puts(""); // Empty Line
+printf("Total Waiting Time : %-2d\n", sum_waiting_time);
+printf("Average Waiting Time : %-2.2lf\n",(double)sum_waiting_time / (double) n);
+printf("Total Turnaround Time : %-2d\n", sum_turnaround_time);
+printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
 }
-
-void waitPrior(Process pr[], int n){
-
+void SRTF()
+{
+Process p[MAX];
+int n,i,j,sum_waiting_time=0,sum_turnaround_time=0;
+int rt[20];
+int complete = 0, t = 0, minm = INT_MAX,check=0,shortest = 0, finish_time;
+printf("Enter number of processes: ");
+scanf("%d",&n);
+printf("Enter the values:\n");
+for(i=0;i<n;i++)
+{
+printf("Enter pid: ");
+scanf("%d",&p[i].pid);
+printf("\n");
+printf("Enter Burst time: ");
+scanf("%d",&p[i].burst_time);
+printf("Enter Arrival time: ");
+scanf("%d",&p[i].arrival_time);
+printf("\n");
 }
-
-//RoundRobin
-void roundRobin(Process pr[], int n, int time){
-    printf("Enter quantum time: ");
-    scanf("%d",&qt);
-    while(1)
-    {
-
-        for(i=0,count=0;i<n;i++)
-        {
-            temp=qt;
-            if(p[i].rem_bt==0)
-            {
-                count++;
-                continue;
-            }
-            if(p[i].rem_bt>qt)
-                p[i].rem_bt=p[i].rem_bt-qt;
-            else
-            {
-
-
-                if(p[i].rem_bt>=0)
-                {
-                    temp=p[i].rem_bt;
-                    p[i].rem_bt=0;
-
-                }
-            }
-
-                sq=sq+temp;
-                p[i].turnaround_time=sq;
-
-
-        }
-        if(n==count)
-            break;
-    }
-
-    for(i=0;i<n;i++)
-    {
-        p[i].waiting_time=p[i].turnaround_time-p[i].burst_time;
-        sum_waiting_time=sum_waiting_time+p[i].waiting_time;
-        sum_turnaround_time=sum_turnaround_time+p[i].turnaround_time;
-        p[i].completion_time=p[i].turnaround_time;
-
-    }
+for(i = 0; i < n; i++)
+{
+rt[i] = p[i].burst_time;
 }
-
-float avgTAT(Process pr[], int n){
-    int avg = 0;
-    for(int i = 0; i < n; i++){
-        avg += pr[i].turnaround_time;
-    }
-    return avg/n;
+while (complete != n) {
+// Find process with minimum
+// remaining time among the
+// processes that arrives till the
+// current time`
+for (j = 0; j < n; j++) {
+if ((p[j].arrival_time <= t) && (rt[j] < minm) && rt[j] > 0)
+{
+minm = rt[j];
+shortest = j;
+check = 1;
 }
-
-float avgWT(Process pr[], int n){
-    int avg = 0;
-    for(int i = 0; i < n; i++){
-        avg += pr[i].waiting_time;
-    }
-    return avg/n;
 }
-
-
-int main(){
-
-    int num, time = 0;
-
-    printf("\nHow many processes do you want to include?\n");
-    scanf("%d", &num);
-
-    Process pr[num];
-
-    getProcesses(pr, num);
-    sortSJF(pr, num);
-    print_table(pr, num);
-
-    // printf("----------Implementation of FCFS on the given processess----------");
-    // FCFS(pr, num, time);
-    // printf("\nThe average waiting time is %.2f.\nThe average turnaround time is %.2f.\n", avgWT(pr, num), avgTAT(pr, num));
-
-    // printf("----------Implementation of SJF on the given processess----------");
-    // FCFS(pr, num, time);
-    // printf("\nThe average waiting time is %.2f.\nThe average turnaround time is %.2f.\n", avgWT(pr, num), avgTAT(pr, num));
-
-    // printf("----------Implementation of SRTF on the given processess----------");
-    // FCFS(pr, num, time);
-    // printf("\nThe average waiting time is %.2f.\nThe average turnaround time is %.2f.\n", avgWT(pr, num), avgTAT(pr, num));
-
-    // printf("----------Implementation of Priority Scheduling on the given processess----------");
-    // FCFS(pr, num, time);
-    // printf("\nThe average waiting time is %.2f.\nThe average turnaround time is %.2f.\n", avgWT(pr, num), avgTAT(pr, num));
-
-    // printf("----------Implementation of Round Robin on the given processess----------");
-    // FCFS(pr, num, time);
-    // printf("\nThe average waiting time is %.2f.\nThe average turnaround time is %.2f.\n", avgWT(pr, num), avgTAT(pr, num));
+if (check == 0) {
+t++;
+continue;
 }
-
-
+// Reduce remaining time by one
+rt[shortest]--;
+// Update minimum
+minm = rt[shortest];
+if (minm == 0)
+    minm = INT_MAX;
+// If a process gets completely
+// executed
+if (rt[shortest] == 0) {
+// Increment complete
+complete++;
+check = 0;
+// Find finish time of current
+// process
+finish_time = t + 1;
+// Calculate waiting time
+p[shortest].waiting_time = finish_time - p[shortest].burst_time - p[shortest].arrival_time;
+if (p[shortest].waiting_time < 0)
+p[shortest].waiting_time = 0;
+}
+// Increment time
+t++;
+}
+for(i=0;i<n;i++)
+{
+p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
+sum_waiting_time=sum_waiting_time + p[i].waiting_time;
+sum_turnaround_time=sum_turnaround_time + p[i].turnaround_time; 
+p[i].completion_time=p[i].turnaround_time ;
+}
+puts(""); // Empty line
+print_table(p, n);
+puts(""); // Empty Line
+printf("Total Waiting Time : %-2d\n", sum_waiting_time);
+printf("Average Waiting Time : %-2.2lf\n",
+(double)sum_waiting_time / (double) n);
+printf("Total Turnaround Time : %-2d\n",
+sum_turnaround_time);
+printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
+}
+void Priority()
+{
+Process p[MAX];
+int
+n,i,j,t,b=0,min,k=1,sum_waiting_time=0,sum_turnaround_time=
+0;
+int temp[MAX];
+printf("Enter number of processes: ");
+scanf("%d",&n);
+printf("Enter the values:\n");
+for(i=0;i<n;i++)
+{
+printf("Enter pid: ");
+scanf("%d",&p[i].pid);
+printf("\n");
+printf("Enter Burst time: ");
+scanf("%d",&p[i].burst_time);
+printf("\n");
+printf("Enter Arrival time: ");
+scanf("%d",&p[i].arrival_time);
+printf("Enter priority: ");
+scanf("%d",&p[i].priority);
+printf("\n");
+}
+for(i=0;i<n;i++)
+{
+for(j=0;j<n;j++)
+{
+if(p[i].arrival_time<p[j].arrival_time)
+{
+t=p[j].arrival_time;
+p[j].arrival_time=p[i].arrival_time;
+p[i].arrival_time=t;
+t=p[j].burst_time;
+p[j].burst_time=p[i].burst_time;
+p[i].burst_time=t;
+}
+}
+}
+for(j=0;i<n;j++)
+{
+b=b+p[j].burst_time;
+min=p[k].burst_time;
+for(i=k;i<n;i++)
+{
+min=p[k].priority;
+if(b>=p[i].arrival_time)
+{
+if(p[i].priority<min)
+{
+t=p[k].arrival_time;
+p[k].arrival_time=p[i].arrival_time;
+p[i].arrival_time=t;
+t=p[k].burst_time;
+p[k].burst_time=p[i].burst_time;
+p[i].burst_time=t;
+t=p[k].priority;
+p[k].priority=p[i].priority;
+p[i].priority=t;
+}
+}
+}
+k++;
+}
+temp[0]=0;
+for(i=0;i<n;i++)
+{
+p[i].waiting_time=0;
+p[i].turnaround_time=0;
+temp[i+1]=temp[i]+p[i].burst_time;
+p[i].waiting_time=temp[i] - p[i].arrival_time;
+p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
+sum_waiting_time=sum_waiting_time + p[i].waiting_time;
+sum_turnaround_time=sum_turnaround_time +
+p[i].turnaround_time;
+p[i].completion_time=p[i].turnaround_time +
+p[i].arrival_time;
+}
+puts(""); // Empty line
+print_table(p, n);
+puts(""); // Empty Line
+printf("Total Waiting Time : %-2d\n", sum_waiting_time);
+printf("Average Waiting Time : %-2.2lf\n",
+(double)sum_waiting_time / (double) n);
+printf("Total Turnaround Time : %-2d\n",
+sum_turnaround_time);
+printf("Average Turnaround Time : %-2.2lf\n",
+(double)sum_turnaround_time / (double) n);
+}
+void RR()
+{
+Process p[MAX];
+int n,i,j,sum_waiting_time=0,sum_turnaround_time=0,count=0,temp,qt,sq=0;
+printf("Enter number of processes: ");
+scanf("%d",&n);
+printf("Enter the values:\n");
+for(i=0;i<n;i++)
+{
+printf("Enter pid: ");
+scanf("%d",&p[i].pid);
+printf("\n");
+printf("Enter Burst time: ");
+scanf("%d",&p[i].burst_time);
+p[i].rem_bt=p[i].burst_time;
+printf("\n");
+}
+printf("Enter quantum time: ");
+scanf("%d",&qt);
+while(1)
+{
+for(i=0,count=0;i<n;i++)
+{
+temp=qt;
+if(p[i].rem_bt==0)
+{
+count++;
+continue;
+}
+if(p[i].rem_bt>qt)
+p[i].rem_bt=p[i].rem_bt-qt;
+else
+{
+if(p[i].rem_bt>=0)
+{
+temp=p[i].rem_bt;
+p[i].rem_bt=0;
+}
+}
+sq=sq+temp;
+p[i].turnaround_time=sq;
+}
+if(n==count)
+break;
+}
+for(i=0;i<n;i++)
+{
+p[i].waiting_time=p[i].turnaround_time-p[i].burst_time;
+sum_waiting_time=sum_waiting_time+p[i].waiting_time;
+sum_turnaround_time=sum_turnaround_time+p[i].turnaround_time;
+p[i].completion_time=p[i].turnaround_time;
+}
+puts(""); // Empty line
+print_table(p, n);
+puts(""); // Empty Line
+printf("Total Waiting Time : %-2d\n", sum_waiting_time);
+printf("Average Waiting Time : %-2.2lf\n",
+(double)sum_waiting_time / (double) n);
+printf("Total Turnaround Time : %-2d\n",
+sum_turnaround_time);
+printf("Average Turnaround Time : %-2.2lf\n",
+(double)sum_turnaround_time / (double) n);
+}
+int main()
+{
+printf("****MENU****\n");
+printf("1. FCFS\n");
+printf("2. SJF\n");
+printf("3. SRTF\n");
+printf("4. Priority Scheduling\n");
+printf("5. Round Robin\n");
+printf("6.Exit\n");
+printf("Enter your choice : ");
+int ch;
+scanf("%d",&ch);
+switch(ch)
+{
+case 1:
+FCFS();
+break;
+case 2:
+SJF();
+break;
+case 3:
+SRTF();
+break;
+case 4:
+Priority();
+break;
+case 5:
+RR();
+break;
+case 6:
+exit(0);
+default:
+printf("Invalid input!");
+}
+return 0;
+}
