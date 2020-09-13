@@ -20,7 +20,7 @@ void FCFS()
 {
 
 Process p[MAX];
-int n,i,j,sum_waiting_time=0,sum_turnaround_time=0;
+int n,i,j,tot_WT=0,tot_TAT=0;
 int arr[MAX];
 printf("Total number of processes: ");
 scanf("%d",&n);
@@ -46,8 +46,8 @@ for(j=0;j<n;j++)
     arr[j+1]=arr[j] + p[j].burst_time;
     p[j].waiting_time=arr[j] - p[j].arrival_time;
     p[j].turnaround_time= p[j].turnaround_time + p[j].waiting_time+p[j].burst_time;
-    sum_waiting_time=sum_waiting_time + p[j].waiting_time;
-    sum_turnaround_time=sum_turnaround_time  + p[j].turnaround_time;
+    tot_WT=tot_WT + p[j].waiting_time;
+    tot_TAT=tot_TAT  + p[j].turnaround_time;
     p[j].completion_time=p[j].turnaround_time + p[j].arrival_time;
 
 }
@@ -56,10 +56,10 @@ for(j=0;j<n;j++)
 puts(""); 
 print_table(p, n);
 puts(""); 
-printf("Total Waiting Time	: %d\n", sum_waiting_time);
-printf("Average Waiting Time	: %f\n", (double)sum_waiting_time / (double) n);
-printf("Total Turnaround Time : %d\n", sum_turnaround_time);
-printf("Average Turnaround Time : %f\n", (double)sum_turnaround_time / (double) n);
+printf("Total Waiting Time	: %d\n", tot_WT);
+printf("Average Waiting Time	: %f\n", (double)tot_WT / (double) n);
+printf("Total Turnaround Time : %d\n", tot_TAT);
+printf("Average Turnaround Time : %f\n", (double)tot_TAT / (double) n);
 
 
 
@@ -82,7 +82,7 @@ void SJF()
 {
 
 Process p[MAX];
-int n,i,j,t,sum_waiting_time=0,sum_turnaround_time=0;
+int n,i,j,t,tot_WT=0,tot_TAT=0;
 int arr[MAX];
 printf("Enter number of processes: ");
 scanf("%d",&n);
@@ -123,17 +123,17 @@ for(i=0;i<n;i++)
     }
 
      p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
-     sum_waiting_time=sum_waiting_time + p[i].waiting_time;
-     sum_turnaround_time=sum_turnaround_time  + p[i].turnaround_time;
+     tot_WT=tot_WT + p[i].waiting_time;
+     tot_TAT=tot_TAT  + p[i].turnaround_time;
      p[i].completion_time=p[i].turnaround_time + p[i].arrival_time;
 }
 puts(""); 
 print_table(p, n);
 puts(""); 
-printf("Total Waiting Time	: %-2d\n", sum_waiting_time);
-printf("Average Waiting Time	: %-2.2lf\n", (double)sum_waiting_time / (double) n);
-printf("Total Turnaround Time : %-2d\n", sum_turnaround_time);
-printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
+printf("Total Waiting Time	: %-2d\n", tot_WT);
+printf("Average Waiting Time	: %-2.2lf\n", (double)tot_WT / (double) n);
+printf("Total Turnaround Time : %-2d\n", tot_TAT);
+printf("Average Turnaround Time : %-2.2lf\n", (double)tot_TAT / (double) n);
 
 
 
@@ -141,7 +141,7 @@ printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (dou
 void SRTF()
 {
 Process p[MAX];
-int n,i,j,sum_waiting_time=0,sum_turnaround_time=0;
+int n,i,j,tot_WT=0,tot_TAT=0;
 int rt[20];
 int complete = 0, t = 0, minm = INT_MAX,check=0,shortest = 0, finish_time;
 
@@ -212,17 +212,17 @@ while (complete != n) {
 
 
      p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
-     sum_waiting_time=sum_waiting_time + p[i].waiting_time;
-     sum_turnaround_time=sum_turnaround_time  + p[i].turnaround_time;
+     tot_WT=tot_WT + p[i].waiting_time;
+     tot_TAT=tot_TAT  + p[i].turnaround_time;
      p[i].completion_time=p[i].turnaround_time + p[i].arrival_time;
 }
 puts(""); 
 print_table(p, n);
 puts(""); 
-printf("Total Waiting Time	: %-2d\n", sum_waiting_time);
-printf("Average Waiting Time	: %-2.2lf\n", (double)sum_waiting_time / (double) n);
-printf("Total Turnaround Time : %-2d\n", sum_turnaround_time);
-printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
+printf("Total Waiting Time	: %-2d\n", tot_WT);
+printf("Average Waiting Time	: %-2.2lf\n", (double)tot_WT / (double) n);
+printf("Total Turnaround Time : %-2d\n", tot_TAT);
+printf("Average Turnaround Time : %-2.2lf\n", (double)tot_TAT / (double) n);
 
 
 
@@ -234,7 +234,7 @@ printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (dou
 void Priority()
 {
 Process p[MAX];
-int n,i,j,t,b=0,min,k=1,sum_waiting_time=0,sum_turnaround_time=0;
+int n,i,j,t,b=0,min,k=1,tot_WT=0,tot_TAT=0;
 int arr[MAX];
 printf("Enter number of processes: ");
 scanf("%d",&n);
@@ -311,8 +311,8 @@ for(i=0;i<n;i++)
     arr[i+1]=arr[i]+p[i].burst_time;
     p[i].waiting_time=arr[i] - p[i].arrival_time;
     p[i].turnaround_time=p[i].waiting_time+p[i].burst_time;
-    sum_waiting_time=sum_waiting_time + p[i].waiting_time;
-    sum_turnaround_time=sum_turnaround_time  + p[i].turnaround_time;
+    tot_WT=tot_WT + p[i].waiting_time;
+    tot_TAT=tot_TAT  + p[i].turnaround_time;
     p[i].completion_time=p[i].turnaround_time + p[i].arrival_time;
 
 
@@ -320,17 +320,17 @@ for(i=0;i<n;i++)
 puts(""); 
 print_table(p, n);
 puts(""); 
-printf("Total Waiting Time	: %-2d\n", sum_waiting_time);
-printf("Average Waiting Time	: %-2.2lf\n", (double)sum_waiting_time / (double) n);
-printf("Total Turnaround Time : %-2d\n", sum_turnaround_time);
-printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
+printf("Total Waiting Time	: %-2d\n", tot_WT);
+printf("Average Waiting Time	: %-2.2lf\n", (double)tot_WT / (double) n);
+printf("Total Turnaround Time : %-2d\n", tot_TAT);
+printf("Average Turnaround Time : %-2.2lf\n", (double)tot_TAT / (double) n);
 
 }
 
 void RR()
 {
 Process p[MAX];
-int n,i,j,sum_waiting_time=0,sum_turnaround_time=0,count=0,arr,qt,sq=0;
+int n,i,j,tot_WT=0,tot_TAT=0,count=0,arr,qt,sq=0;
 printf("Enter number of processes: ");
 scanf("%d",&n);
 printf("Enter the values:\n");
@@ -384,18 +384,18 @@ while(1)
 for(i=0;i<n;i++)
 {
     p[i].waiting_time=p[i].turnaround_time-p[i].burst_time;
-    sum_waiting_time=sum_waiting_time+p[i].waiting_time;
-    sum_turnaround_time=sum_turnaround_time+p[i].turnaround_time;
+    tot_WT=tot_WT+p[i].waiting_time;
+    tot_TAT=tot_TAT+p[i].turnaround_time;
     p[i].completion_time=p[i].turnaround_time;
 
 }
 puts(""); 
 print_table(p, n);
 puts(""); 
-printf("Total Waiting Time	: %-2d\n", sum_waiting_time);
-printf("Average Waiting Time	: %-2.2lf\n", (double)sum_waiting_time / (double) n);
-printf("Total Turnaround Time : %-2d\n", sum_turnaround_time);
-printf("Average Turnaround Time : %-2.2lf\n", (double)sum_turnaround_time / (double) n);
+printf("Total Waiting Time	: %-2d\n", tot_WT);
+printf("Average Waiting Time	: %-2.2lf\n", (double)tot_WT / (double) n);
+printf("Total Turnaround Time : %-2d\n", tot_TAT);
+printf("Average Turnaround Time : %-2.2lf\n", (double)tot_TAT / (double) n);
 
 
 
@@ -408,40 +408,41 @@ int main()
 {
 
 
-printf("****MENU****\n");
-printf("1. FCFS\n");
-printf("2. SJF\n");
-printf("3. SRTF\n");
-printf("4. Priority Scheduling\n");
-printf("5. Round Robin\n");
-printf("6.Exit\n");
-printf("Enter your choice : ");
-int ch;
-scanf("%d",&ch);
+        printf("****MENU****\n");
+        printf("1. FCFS\n");
+        printf("2. SJF\n");
+        printf("3. SRTF\n");
+        printf("4. Priority Scheduling\n");
+        printf("5. Round Robin\n");
+        printf("6.Exit\n");
+        printf("Enter your choice : ");
+        int ch;
+        scanf("%d",&ch);
 
-switch(ch)
-{
-case 1:
-FCFS();
-break;
-case 2:
-SJF();
-break;
-case 3:
-SRTF();
-break;
-case 4:
-Priority();
-break;
-case 5:
-RR();
-break;
-case 6:
-exit(0);
-default:
-printf("Invalid input!");
+        switch(ch)
+        {
+        case 1:
+            FCFS();
+            break;
+        case 2:
+            SJF();
+            break;
+        case 3:
+            SRTF();
+            break;
+        case 4:
+            Priority();
+            break;
+        case 5:
+            RR();
+            break;
+        case 6:
+            exit(0);
+        default:
+            printf("Invalid input!");
+            break;
 }
-return 0;
+        return 0;
 }
 
 
