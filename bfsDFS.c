@@ -1,84 +1,171 @@
-#include <stdio.h>
-#include <stdlib.h>
-#define MAX 4
-
-void bfs(int adj[][MAX], int visited[],int start)
+#include<stdio.h>
+#include<stdlib.h>
+ 
+#define MAX 100  
+ 
+#define initial 1
+#define waiting 2
+#define visited 3
+ 
+int n;   
+int G[MAX][MAX];
+int visit[MAX];
+int adj[MAX][MAX];
+int state[MAX]; 
+void createGraph();
+void BF_Traversal();
+void BFS(int v);
+ 
+int queue[MAX], front = -1,rear = -1;
+void insertQueue(int vertex);
+int delete_queue();
+int isEmpty();
+void DFS(int i)
 {
-    int queue[MAX], rear=-1, front=-1, i;
-    queue[++rear]=start;
-    visited[start]=1;
-    while(rear!=front)
-    {
-        start=queue[++front];
-        if(start==4)
-        printf("5 \t");
-        else
-        printf("%c \t",start + 65);
-        for(i=0;i<MAX;i++)
-        {
-            if(adj[start][i]==1 && visited[i]==0)
-            {
-                queue[++rear]=i;
-                visited[i]=1;
-            }
-        }
-    }
+    int j;
+	printf("\n%d",i);
+    visit[i]=1;
+	
+	for(j=0;j<n;j++)
+       if(!visit[j]&&G[i][j]==1)
+            DFS(j);
 }
-
-void dfs(int adj[][MAX],int visited[],int start)
+ 
+int main()
 {
-    int stack[MAX];
-    int top=-1,i;
-    printf("%c-",start+65);
-    visited[start]=1;
-    stack[++top]=start;
-    while(top!=-1)
-    {
-        start=stack[top];
-        for(i=0;i<MAX;i++)
-        {
-            if(adj[start][i]&& visited[i]==0)
-            {
-                stack[++top]=i;
-                printf("%c-",i+65);
-                visited[i]=1;
-                break;
-            }
-        }
-        if(i==MAX)
-        top--;
-    }
-}
-
-int main(){
-    int visited[MAX]={0};
-    int adj[MAX][MAX],i,j, startNode, opt;
-    printf("\n Enter the adjacency matrix:");
-    for(i=0;i<MAX;i++)
-        for(j=0;j<MAX;j++)
-            scanf("%d",&adj[i][j]);
-
-    
-    while(1 == 1){
-        printf("----------BFS and DFS Implementation----------\n");
+    int i,j, ch;
+    while(1) {
+        printf("----------BFS and DFS----------\n");
         printf("1.)BFS\n2.)DFS\n3.)Exit\n");
-        scanf("%d", &opt);
-
-        switch (opt){
-            case 1:
-                printf("\nEnter the start node for BFS\n");
-                scanf("%d", &startNode);
-                bfs(adj, visited, startNode);
-                break;
-            case 2:
-                printf("\nEnter the start node for DFS\n");
-                dfs(adj, visited, startNode);
-                break;
-            case 3:
-                exit(0);
-            default:
-                printf("Please select a valid choice!!\n");
-                break;
+        scanf("%d", &ch);
+        switch(ch) {
+        case 1:
+            createGraph();
+	        BF_Traversal();      
+            break;
+        case 2:
+            printf("Enter number of vertices:");
+   
+            scanf("%d",&n);
+    
+            printf("\nEnter adjecency matrix of the graph:");
+        
+            
+            for(i=0;i<n;i++)
+            for(j=0;j<n;j++)
+                    scanf("%d",&G[i][j]);
+    
+        for(i=0;i<n;i++)
+                visit[i]=0;
+        
+            DFS(0);
+            break;
+        case 3:
+            exit(0);
+        default:
+            printf("Invalid choice, enter correct choice...");
         }
     }
+	
+	return 0;
+}
+ 
+void BF_Traversal()
+{
+	int v;
+	
+	for(v=0; v<n; v++) 
+		state[v] = initial;
+	
+	printf("Enter Start Vertex for BFS: \n");
+	scanf("%d", &v);
+	BFS(v);
+}
+ 
+void BFS(int v)
+{
+	int i;
+	
+	insertQueue(v);
+	state[v] = waiting;
+	
+	while(!isEmpty())
+	{
+		v = delete_queue( );
+		printf("%d ",v);
+		state[v] = visited;
+		
+		for(i=0; i<n; i++)
+		{
+			if(adj[v][i] == 1 && state[i] == initial) 
+			{
+				insertQueue(i);
+				state[i] = waiting;
+			}
+		}
+	}
+	printf("\n");
+}
+ 
+void insertQueue(int vertex)
+{
+	if(rear == MAX-1)
+		printf("Queue Overflow\n");
+	else
+	{
+		if(front == -1) 
+			front = 0;
+		rear = rear+1;
+		queue[rear] = vertex ;
+	}
+}
+ 
+int isEmpty()
+{
+	if(front == -1 || front > rear)
+		return 1;
+	else
+		return 0;
+}
+ 
+int delete_queue()
+{
+	int delete_item;
+	if(front == -1 || front > rear)
+	{
+		printf("Queue Underflow\n");
+		exit(1);
+	}
+	
+	delete_item = queue[front];
+	front = front+1;
+	return delete_item;
+}
+ 
+void createGraph()
+{
+	int count,maxEdge,origin,destin;
+ 
+	printf("Enter number of vertices : ");
+	scanf("%d",&n);
+	maxEdge = n*(n-1);
+ 
+	for(count=1; count<=maxEdge; count++)
+	{
+		printf("Enter edge %d( -1 -1 to quit ) : ",count);
+		scanf("%d %d",&origin,&destin);
+ 
+		if((origin == -1) && (destin == -1))
+			break;
+ 
+		if(origin>=n || destin>=n || origin<0 || destin<0)
+		{
+			printf("Invalid edge!\n");
+			count--;
+		}
+		else
+		{
+			adj[origin][destin] = 1;
+		}
+	}
 }
