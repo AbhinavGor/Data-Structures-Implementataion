@@ -1,91 +1,112 @@
-#include <stdio.h>
-#include <stdlib.h>
-#define MAX 1024
+#include<stdio.h>
+#include<stdlib.h>
 
-void quickSort(int arr[], int low, int high){
-    int pivot, temp;
-
-    if(low < high){
-        pivot = low;
-        int i = low;
-        int j = high;
-
-         while (i < j) 
-        {
-            while (arr[i] <= arr[pivot] && i <= high)
-            {
-                i++;
-            }
-            while (arr[j] > arr[pivot] && j >= low)
-            {
-                j--;
-            }
-            if (i < j)
-            {
-                temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-        }
-        temp = arr[j];
-        arr[j] = arr[pivot];
-        arr[pivot] = temp;
-        quickSort(arr, low, j - 1);
-        quickSort(arr, j + 1, high);
-    }
-
-    printf("Array after sorting with quick Sort is: ");
-    for( int i = 0; i < high + 1; i++){
-        printf("%d\t", arr[i]);
-    }
-    printf("\n");
-
-}
-
-void mergeSort(int arr[], int l, int r) 
-{ 
-    if (l < r) { 
-        int m = l + (r - l) / 2; 
-  
-        mergeSort(arr, l, m); 
-        mergeSort(arr, m + 1, r); 
-  
-        merge(arr, l, m, r); 
-    } 
-    printf("Array after sorting with merge Sort is: ");
-    for( int i = 0; i < r + 1; i++){
-        printf("%d\t", arr[i]);
-    }
-    printf("\n");
+void quickSort(int[], int, int);
+void mergeSort(int, int);
+void merge(int, int, int, int);
+int partition (int[], int, int);
+void display(int);
+void swap(int* a, int* b) { 
+    int t = *a; 
+    *a = *b; 
+    *b = t; 
 } 
-  
-int main(){
-    int arr[MAX], count, opt;
-    printf("How many numbers are to be sorted?\n");
-    scanf("%d", &count);
 
-    for(int i = 0; i < count; i++){
+int arr[100];
+int main(){
+    int i, num, ch;
+    printf("Enter number of elements: ");
+    scanf("%d", &num);
+    for(i = 0; i < num; i++) {
         scanf("%d", &arr[i]);
     }
-
-    while(1 == 1){
-        printf("----------Sorting Algorithm Implementation----------\n");
-        printf("1.)Merge Sort\n2.)Quick Sort\n3.)Exit\n");
-        scanf("%d", &opt);
-
-        switch (opt){
-            case 1:
-                mergeSort(arr, 0, count-1);
-                break;
-            case 2:
-                quickSort(arr, 0, count-1);
-                break;
-            case 3:
-                exit(0);
-            default:
-                printf("Please select a valid choice!!\n");
-                break;
+    while(1) {
+        printf("----------Sorting Algorithms Implementation----------\n");
+        printf("1.)Quick sort\n2.)Merge Sort\n3.)Exit\n");
+        scanf("%d", &ch);
+        switch(ch) {
+        case 1:
+            quickSort(arr, 0, num - 1);
+            printf("\nArray after sorting using Quick Sort: ");
+            display(num);        
+            break;
+        case 2:
+            mergeSort(0, num - 1);
+            printf("\nArray after sorting using Merge Sort: ");
+            display(num);
+            break;
+        case 3:
+            exit(0);
+        default:
+            printf("Invalid choice, enter correct choice...");
         }
     }
+    return 0;
+}
 
+void display(int num) {
+    for(int i = 0; i < num; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+
+int partition (int arr[], int low, int high) 
+{ 
+    int pivot = arr[high];    
+    int i = (low - 1);  
+  
+    for (int j = low; j <= high- 1; j++) 
+    { 
+        
+        if (arr[j] < pivot) 
+        { 
+            i++;    
+            swap(&arr[i], &arr[j]); 
+        } 
+    } 
+    swap(&arr[i + 1], &arr[high]); 
+    return (i + 1); 
+} 
+  
+void quickSort(int arr[], int low, int high) 
+{ 
+    if (low < high) 
+    { 
+        
+        int pi = partition(arr, low, high); 
+  
+        quickSort(arr, low, pi - 1); 
+        quickSort(arr, pi + 1, high); 
+    } 
+}
+
+void mergeSort(int i,int j) {
+    int mid;
+    if(i < j) {
+        mid = ( i + j ) / 2;
+        mergeSort(i, mid); 
+        mergeSort(mid + 1, j); 
+        merge(i, mid, mid + 1, j); 
+    }
+}
+
+void merge(int i1, int j1, int i2, int j2) {
+    int temp[100]; 
+    int i, j, k;
+    i = i1; 
+    j = i2; 
+    k = 0;
+    while(i <= j1 && j <= j2) { 
+        if(arr[i] < arr[j])
+        temp[k++] = arr[i++];
+        else
+        temp[k++] = arr[j++];
+    }
+    while(i <= j1) 
+        temp[k++] = arr[i++];
+    while(j <= j2) 
+        temp[k++] = arr[j++];
+    for(i = i1, j = 0; i <= j2; i++, j++)
+        arr[i] = temp[j];
 }
