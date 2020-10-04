@@ -35,7 +35,8 @@ int main()
 {
     int i,j, ch;
     while(1) {
-        printf("----------BFS and DFS----------\n");
+        printf("----------BFS and DFS
+        ----------\n");
         printf("1.)BFS\n2.)DFS\n3.)Exit\n");
         scanf("%d", &ch);
         switch(ch) {
